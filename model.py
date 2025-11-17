@@ -1,17 +1,54 @@
+
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-df = pd.read_csv("data.csv")
 
-X = df[['attendance','assignment_score','midterm_score']]
-y = df['final_grade']
+df = pd.read_excel("C:\\zUsers\\HP\\Downloads\\student_performance_project\\data.csv")
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+print("\n===== FIRST 5 ROWS =====")
+print(df.head())
 
-model = LinearRegression()
-model.fit(X_train, y_train)
+print("\n===== SUMMARY STATISTICS =====")
+print(df.describe())
 
-pred = model.predict(X_test)
-print("MAE:", mean_absolute_error(y_test, pred))
+
+corr = df.corr(numeric_only=True)
+print("\n===== CORRELATION MATRIX =====")
+print(corr)
+
+print("\n===== CORRELATION WITH final_grade =====")
+print(corr["final_grade"])
+
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap")
+plt.show()
+
+
+plt.figure(figsize=(6,4))
+plt.hist(df["final_grade"], bins=10)
+plt.title("Histogram of Final Grade")
+plt.xlabel("Final Grade")
+plt.ylabel("Frequency")
+plt.show()
+
+
+plt.figure(figsize=(6,4))
+df["final_grade"].value_counts().sort_index().plot(kind='bar')
+plt.title("Bar Graph of Final Grade")
+plt.xlabel("Final Grade")
+plt.ylabel("Count")
+plt.show()
+
+
+features = ["attendance", "assignment_score", "midterm_score"]
+
+for col in features:
+    plt.figure(figsize=(6,4))
+    plt.scatter(df[col], df["final_grade"])
+    plt.title(f"{col} vs Final Grade")
+    plt.xlabel(col)
+    plt.ylabel("Final Grade")
+    plt.show()
